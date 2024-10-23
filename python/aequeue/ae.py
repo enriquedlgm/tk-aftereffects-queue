@@ -372,7 +372,7 @@ class AfterEffectsEngineWrapper(object):
         }
 
         # Check if path represents image sequence
-        sequence_match = re.search(r"\[(\#+)\]", file_path)
+        sequence_match = re.search(r"_(\d+)\.", file_path)
         if sequence_match:
             info["is_sequence"] = True
             info["padding"] = len(sequence_match.group(1))
