@@ -476,32 +476,38 @@ def get_frame_range(in_file):
         # Check for % format token
         if not seq_text:
             match = re.search(r'%0\dd', in_file)
-            seq_text = match.group(0)
-
-        # Check for # frame padding
-        if not seq_text:
-            match = re.search(r'\#+', in_file)
             if match:
                 seq_text = match.group(0)
 
-        # Check for actual frame number
+        # Check for # frame padding (like ####)
         if not seq_text:
-            match = re.findall(r'\d+', in_file)
+            match = re.search(r'_\#+\.', in_file)  # Updated pattern to match "_####."
             if match:
-                seq_text = match[-1]
+                seq_text = match.group(0)
+
+        # Check for actual frame number (like _0000)
+        if not seq_text:
+            match = re.search(r'_(\d+)\.', in_file)  # Updated to match "_0000."
+            if match:
+                seq_text = match.group(1)
 
         # Failed to detect frame number in input file
         if not seq_text:
             raise ValueError('in_file does not look like an image sequence.')
 
-        pattern = in_file.replace(seq_text, '*')
+        # Create the glob pattern for the sequence by replacing frame number/padding with "*"
+        pattern = re.sub(r'_(\d+|\#+)\.', '_*.', in_file)
         frame_numbers = sorted([
-            int(re.findall(r'\d+', f)[-1])
+            int(re.search(r'_(\d+)\.', f).group(1))  # Extract frame number from matched files
             for f in glob.glob(pattern)
         ])
+
+        if not frame_numbers:
+            raise ValueError(f'No frames found for pattern: {pattern}')
+
         return frame_numbers[0], frame_numbers[-1]
 
-    # Probe framerange from video file using ffmpeg
+    # Probe frame range from video file using ffmpeg (if not an image sequence)
     proc = subprocess.Popen(
         [
             'ffmpeg',
@@ -519,7 +525,7 @@ def get_frame_range(in_file):
 
     frame = parse_frame(out)
     if not frame:
-        raise RuntimeError('Could not probe framerange from "%s".' % in_file)
+        raise RuntimeError('Could not probe frame range from "%s".' % in_file)
 
     return 1, frame
 
