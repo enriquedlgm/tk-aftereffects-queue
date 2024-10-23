@@ -461,7 +461,8 @@ class Application(QtCore.QObject):
                     output_path = paths.normalize(
                         "{folder}",
                         token,
-                        f"{token}.[{padding}].{extension}",
+                        #f"{token}.{padding}.{extension}",
+                        f"{token}.{extension}",
                     )
                 else:
                     output_path = paths.normalize("{folder}", f"{token}.{extension}")
