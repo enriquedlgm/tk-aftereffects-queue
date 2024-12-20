@@ -554,7 +554,7 @@ class Application(QtCore.QObject):
 
     def open_in_shotgrid(self, version):
         url_template = (
-            "https://brandnewschool.shotgunstudio.com/page/media_center"
+            "https://frame48.shotgunstudio.com/page/media_center"
             "?type=Shot&id={shot_id}&project_id={project_id}"
             "&tree_path=%2Fbrowse_tree%2FProject%2F{project_id}%2F"
             "Shot%2F{seq_id}%2F{shot_id}"

@@ -316,7 +316,6 @@ class AfterEffectsEngineWrapper(object):
                 data.get("File Name", data.get("File Template", "")),
             ]
             full_path = "/".join([part for part in parts if part])
-
         # Set output module's file object.
         self.set_file(obj, full_path.replace("\\", "/"))
 
@@ -372,7 +371,8 @@ class AfterEffectsEngineWrapper(object):
         }
 
         # Check if path represents image sequence
-        sequence_match = re.search(r"_(\d+)\.", file_path)
+        sequence_match = re.search(r"\[(\#+)\]", file_path) #EDLG TESTING
+        #sequence_match = re.search(r"_(\d+)\.", file_path)
         if sequence_match:
             info["is_sequence"] = True
             info["padding"] = len(sequence_match.group(1))
